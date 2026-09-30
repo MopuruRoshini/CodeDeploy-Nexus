@@ -78,7 +78,7 @@ pipeline {
                 bat '''
                 echo ===== STARTING MAVEN =====
 
-                powershell -NoProfile -ExecutionPolicy Bypass -Command "& 'C:\\Program Files\\Apache\\apache-maven-3.9.16\\bin\\mvn.cmd' -f 'webapp\\pom.xml' clean package; exit $LASTEXITCODE"
+                powershell -NoProfile -ExecutionPolicy Bypass -Command "& 'C:\\Program Files\\Apache\\apache-maven-3.9.16\\bin\\mvn.cmd' -f 'pom.xml' clean package; exit $LASTEXITCODE"
 
                 if %ERRORLEVEL% NEQ 0 (
                     echo MAVEN BUILD FAILED
