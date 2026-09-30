@@ -37,12 +37,17 @@ pipeline {
         echo 'Building Java web application...'
 
         bat '''
-        "C:\\Program Files\\Apache\\apache-maven-3.9.16\\bin\\mvn.cmd" -f webapp\\pom.xml clean package
+call "C:\\Program Files\\Apache\\apache-maven-3.9.16\\bin\\mvn.cmd" -f webapp\\pom.xml clean package
 
-        echo.
-        echo ===== WEBAPP TARGET CONTENT =====
-        dir webapp\\target /B
-        '''
+echo.
+echo ===== WEBAPP TARGET CONTENT =====
+if exist webapp\\target (
+    dir webapp\\target /B
+) else (
+    echo webapp\\target DOES NOT EXIST
+    exit /B 1
+)
+'''
     }
 }
 
