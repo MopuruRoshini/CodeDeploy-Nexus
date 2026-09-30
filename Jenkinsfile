@@ -37,7 +37,7 @@ pipeline {
         echo 'Building Java web application...'
 
         bat '''
-call "C:\\Program Files\\Apache\\apache-maven-3.9.16\\bin\\mvn.cmd" -f webapp\\pom.xml clean package
+call cmd /c ""C:\\Program Files\\Apache\\apache-maven-3.9.16\\bin\\mvn.cmd" -f webapp\\pom.xml clean package"
 
 echo.
 echo ===== WEBAPP TARGET CONTENT =====
