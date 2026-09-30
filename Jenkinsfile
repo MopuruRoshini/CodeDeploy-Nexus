@@ -33,14 +33,18 @@ pipeline {
         }
 
         stage('Build with Maven') {
-            steps {
-                echo 'Building Java web application...'
+    steps {
+        echo 'Building Java web application...'
 
-                dir('.') {
-                   bat '"C:\\Program Files\\Apache\\apache-maven-3.9.16\\bin\\mvn.cmd" clean package'
-                }
-            }
-        }
+        bat '''
+        "C:\\Program Files\\Apache\\apache-maven-3.9.16\\bin\\mvn.cmd" -f webapp\\pom.xml clean package
+
+        echo.
+        echo ===== WEBAPP TARGET CONTENT =====
+        dir webapp\\target /B
+        '''
+    }
+}
 
         stage('Prepare WAR') {
             steps {
