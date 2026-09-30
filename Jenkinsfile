@@ -33,12 +33,60 @@ pipeline {
             }
         }
 
+        stage('Check Workspace') {
+            steps {
+                echo 'Checking Jenkins workspace contents...'
+
+                bat '''
+                echo ===== CURRENT WORKSPACE =====
+                cd
+
+                echo.
+                echo ===== ROOT FILES =====
+                dir /B
+
+                echo.
+                echo ===== CHECKING WEBAPP =====
+
+                if exist webapp (
+                    echo WEBAPP EXISTS
+                    echo.
+                    echo ===== WEBAPP CONTENT =====
+                    dir webapp /B
+                ) else (
+                    echo WEBAPP DOES NOT EXIST
+                    exit /B 1
+                )
+
+                echo.
+                echo ===== CHECKING WEBAPP POM =====
+
+                if exist webapp\\pom.xml (
+                    echo webapp\\pom.xml EXISTS
+                ) else (
+                    echo webapp\\pom.xml DOES NOT EXIST
+                    exit /B 1
+                )
+                '''
+            }
+        }
+
         stage('Build with Maven') {
             steps {
                 echo 'Building Java web application...'
 
                 bat '''
-                powershell -NoProfile -ExecutionPolicy Bypass -Command "& 'C:\\Program Files\\Apache\\apache-maven-3.9.16\\bin\\mvn.cmd' -f 'webapp\\pom.xml' clean package; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }"
+                echo ===== STARTING MAVEN =====
+
+                powershell -NoProfile -ExecutionPolicy Bypass -Command "& 'C:\\Program Files\\Apache\\apache-maven-3.9.16\\bin\\mvn.cmd' -f 'webapp\\pom.xml' clean package; exit $LASTEXITCODE"
+
+                if %ERRORLEVEL% NEQ 0 (
+                    echo MAVEN BUILD FAILED
+                    exit /B %ERRORLEVEL%
+                )
+
+                echo.
+                echo ===== MAVEN BUILD COMPLETED =====
 
                 echo.
                 echo ===== WEBAPP TARGET CONTENT =====
@@ -57,15 +105,14 @@ pipeline {
             steps {
                 echo 'Preparing WAR file...'
 
-                dir('.') {
-                    bat '''
-                    echo ===== WEBAPP TARGET =====
-                    dir webapp\\target /B
+                bat '''
+                echo ===== WEBAPP TARGET =====
+                dir webapp\\target /B
 
-                    echo ===== COPYING WAR =====
-                    copy /Y webapp\\target\\webapp.war .
-                    '''
-                }
+                echo.
+                echo ===== COPYING WAR =====
+                copy /Y webapp\\target\\webapp.war .
+                '''
             }
         }
 
@@ -73,12 +120,10 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
 
-                dir('.') {
-                    bat '''
-                    docker build --no-cache -t %IMAGE_NAME%:%BUILD_NUMBER% .
-                    docker tag %IMAGE_NAME%:%BUILD_NUMBER% %IMAGE_NAME%:latest
-                    '''
-                }
+                bat '''
+                docker build --no-cache -t %IMAGE_NAME%:%BUILD_NUMBER% .
+                docker tag %IMAGE_NAME%:%BUILD_NUMBER% %IMAGE_NAME%:latest
+                '''
             }
         }
 
