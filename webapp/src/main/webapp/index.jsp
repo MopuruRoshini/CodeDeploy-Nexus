@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>DevOpsHub | Automation Platform</title>
+    <link rel="stylesheet" href="style.css">
 
     <style>
 

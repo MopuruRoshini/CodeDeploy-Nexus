@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>DevOps Learning - Sign In</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
