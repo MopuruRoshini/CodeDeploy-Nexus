@@ -36,7 +36,7 @@ pipeline {
             steps {
                 echo 'Building Java web application...'
 
-                dir('DevOps-Project-05/hello-world') {
+                dir('.') {
                     bat 'mvn clean package'
                 }
             }
@@ -46,7 +46,7 @@ pipeline {
             steps {
                 echo 'Preparing WAR file...'
 
-                dir('DevOps-Project-05/hello-world') {
+                dir('.') {
                     bat 'copy /Y webapp\\target\\webapp.war .'
                 }
             }
@@ -56,7 +56,7 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
 
-                dir('DevOps-Project-05/hello-world') {
+                dir('.') {
                     bat 'docker build --no-cache -t %IMAGE_NAME%:%BUILD_NUMBER% .'
                     bat 'docker tag %IMAGE_NAME%:%BUILD_NUMBER% %IMAGE_NAME%:latest'
                 }
