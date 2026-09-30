@@ -243,6 +243,50 @@
             margin-right: 5px;
         }
 
+
+        /* NAVIGATION SECTIONS */
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .info-section {
+            min-height: 360px;
+            padding: 90px 8%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: rgba(7,11,20,0.72);
+            border-top: 1px solid rgba(255,255,255,0.07);
+            scroll-margin-top: 75px;
+        }
+
+        .info-section:nth-of-type(even) {
+            background: rgba(17,24,39,0.45);
+        }
+
+        .info-section h2 {
+            color: #f8fafc;
+            font-size: 34px;
+            margin-bottom: 16px;
+        }
+
+        .info-section p {
+            max-width: 760px;
+            color: #9aa6ba;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .info-section::before {
+            content: "";
+            width: 55px;
+            height: 3px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            background: linear-gradient(90deg,#3b82f6,#6366f1);
+        }
+
         /* RESPONSIVE */
 
         @media(max-width: 900px) {
@@ -272,14 +316,14 @@
 <nav>
 
     <div class="logo">
-        ◈ DevOps<span>Hub</span>
+        DevOps<span>Hub</span>
     </div>
 
     <div class="nav-links">
-        <a href="#">Platform</a>
-        <a href="#">Pipelines</a>
-        <a href="#">Monitoring</a>
-        <a href="#">Deployments</a>
+        <a href="#platform">Platform</a>
+        <a href="#pipelines">Pipelines</a>
+        <a href="#monitoring">Monitoring</a>
+        <a href="#deployments">Deployments</a>
     </div>
 
     <a href="login.jsp" class="login-btn">Sign In</a>
@@ -444,6 +488,43 @@
 
     </div>
 
+</section>
+
+
+<!-- PLATFORM -->
+<section id="platform" class="info-section">
+    <h2>DevOps Platform</h2>
+    <p>
+        CodeDeploy Nexus provides a unified DevOps platform for source control,
+        continuous integration, automated builds, containerization and application deployment.
+    </p>
+</section>
+
+<!-- PIPELINES -->
+<section id="pipelines" class="info-section">
+    <h2>CI/CD Pipelines</h2>
+    <p>
+        GitHub manages the source code while Jenkins automates checkout, Maven builds,
+        testing, Docker image creation and deployment through a continuous delivery workflow.
+    </p>
+</section>
+
+<!-- MONITORING -->
+<section id="monitoring" class="info-section">
+    <h2>Monitoring</h2>
+    <p>
+        The platform provides visibility into the application and deployment workflow,
+        helping track build status, container status and the deployed application.
+    </p>
+</section>
+
+<!-- DEPLOYMENTS -->
+<section id="deployments" class="info-section">
+    <h2>Deployments</h2>
+    <p>
+        Docker packages the web application into a portable container and deploys it
+        through Tomcat, making the application available through the configured service port.
+    </p>
 </section>
 
 </body>
