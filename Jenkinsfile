@@ -72,34 +72,35 @@ pipeline {
         }
 
         stage('Build with Maven') {
-            steps {
-                echo 'Building Java web application...'
+    steps {
+        echo 'Building Java web application...'
 
-                bat '''
-                echo ===== STARTING MAVEN =====
+        bat '''
+        echo ===== STARTING MAVEN BUILD =====
 
-                powershell -NoProfile -ExecutionPolicy Bypass -Command "& 'C:\\Program Files\\Apache\\apache-maven-3.9.16\\bin\\mvn.cmd' -f 'pom.xml' clean package; exit $LASTEXITCODE"
+        "C:\\Program Files\\Apache\\apache-maven-3.9.16\\bin\\mvn.cmd" clean package
 
-                if %ERRORLEVEL% NEQ 0 (
-                    echo MAVEN BUILD FAILED
-                    exit /B %ERRORLEVEL%
-                )
+        if %ERRORLEVEL% NEQ 0 (
+            echo MAVEN BUILD FAILED
+            exit /B %ERRORLEVEL%
+        )
 
-                echo.
-                echo ===== MAVEN BUILD COMPLETED =====
+        echo.
+        echo ===== MAVEN BUILD COMPLETED =====
 
-                echo.
-                echo ===== WEBAPP TARGET CONTENT =====
+        echo.
+        echo ===== CHECKING WAR FILE =====
 
-                if exist webapp\\target (
-                    dir webapp\\target /B
-                ) else (
-                    echo webapp\\target DOES NOT EXIST
-                    exit /B 1
-                )
-                '''
-            }
-        }
+        if exist webapp\\target\\webapp.war (
+            echo WAR FILE CREATED SUCCESSFULLY
+            dir webapp\\target\\webapp.war
+        ) else (
+            echo WAR FILE DOES NOT EXIST
+            exit /B 1
+        )
+        '''
+    }
+}
 
         stage('Prepare WAR') {
             steps {
