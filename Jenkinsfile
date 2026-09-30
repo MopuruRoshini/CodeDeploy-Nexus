@@ -37,7 +37,7 @@ pipeline {
                 echo 'Building Java web application...'
 
                 dir('.') {
-                    bat 'mvn clean package'
+                    bat 'mvn clean package'bat '"C:\\Program Files\\Apache\\apache-maven-3.9.16\\bin\\mvn.cmd" clean package'
                 }
             }
         }
