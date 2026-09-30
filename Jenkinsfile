@@ -24,6 +24,7 @@ pipeline {
         stage('Verify Tools') {
             steps {
                 echo 'Checking Java, Maven and Docker...'
+
                 bat '''
                 java -version
                 mvn -version
@@ -33,30 +34,37 @@ pipeline {
         }
 
         stage('Build with Maven') {
-    steps {
-        echo 'Building Java web application...'
+            steps {
+                echo 'Building Java web application...'
 
-        bat '''
-call cmd /c ""C:\\Program Files\\Apache\\apache-maven-3.9.16\\bin\\mvn.cmd" -f webapp\\pom.xml clean package"
+                bat '''
+                powershell -NoProfile -ExecutionPolicy Bypass -Command "& 'C:\\Program Files\\Apache\\apache-maven-3.9.16\\bin\\mvn.cmd' -f 'webapp\\pom.xml' clean package; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }"
 
-echo.
-echo ===== WEBAPP TARGET CONTENT =====
-if exist webapp\\target (
-    dir webapp\\target /B
-) else (
-    echo webapp\\target DOES NOT EXIST
-    exit /B 1
-)
-'''
-    }
-}
+                echo.
+                echo ===== WEBAPP TARGET CONTENT =====
+
+                if exist webapp\\target (
+                    dir webapp\\target /B
+                ) else (
+                    echo webapp\\target DOES NOT EXIST
+                    exit /B 1
+                )
+                '''
+            }
+        }
 
         stage('Prepare WAR') {
             steps {
                 echo 'Preparing WAR file...'
 
                 dir('.') {
-                    bat 'copy /Y webapp\\target\\webapp.war .'
+                    bat '''
+                    echo ===== WEBAPP TARGET =====
+                    dir webapp\\target /B
+
+                    echo ===== COPYING WAR =====
+                    copy /Y webapp\\target\\webapp.war .
+                    '''
                 }
             }
         }
@@ -66,8 +74,10 @@ if exist webapp\\target (
                 echo 'Building Docker image...'
 
                 dir('.') {
-                    bat 'docker build --no-cache -t %IMAGE_NAME%:%BUILD_NUMBER% .'
-                    bat 'docker tag %IMAGE_NAME%:%BUILD_NUMBER% %IMAGE_NAME%:latest'
+                    bat '''
+                    docker build --no-cache -t %IMAGE_NAME%:%BUILD_NUMBER% .
+                    docker tag %IMAGE_NAME%:%BUILD_NUMBER% %IMAGE_NAME%:latest
+                    '''
                 }
             }
         }
@@ -79,6 +89,7 @@ if exist webapp\\target (
                 bat '''
                 docker stop %CONTAINER_NAME% 2>NUL || exit /B 0
                 docker rm %CONTAINER_NAME% 2>NUL || exit /B 0
+
                 docker run -d -p %APP_PORT%:8080 --name %CONTAINER_NAME% %IMAGE_NAME%:%BUILD_NUMBER%
                 '''
             }
@@ -90,6 +101,7 @@ if exist webapp\\target (
 
                 bat '''
                 docker ps --filter "name=%CONTAINER_NAME%"
+
                 echo.
                 echo Application URL:
                 echo http://localhost:8081/webapp/
